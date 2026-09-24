@@ -6,7 +6,6 @@ import requests
 import streamlit as st
 import pandas as pd
 
-from dotenv import load_dotenv
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -24,12 +23,31 @@ st.set_page_config(
 
 
 # ============================================================
-# ENV
+# TMDB CONFIG
 # ============================================================
 
-load_dotenv()
+# Streamlit Cloud:
+# Use st.secrets["TMDB_ACCESS_TOKEN"]
+#
+# Local:
+# Use environment variable from .env / system environment.
+#
+# We avoid importing python-dotenv so the deployed app
+# does not depend on python-dotenv.
 
-TMDB_ACCESS_TOKEN = os.getenv("TMDB_ACCESS_TOKEN")
+TMDB_ACCESS_TOKEN = None
+
+try:
+    TMDB_ACCESS_TOKEN = st.secrets.get(
+        "TMDB_ACCESS_TOKEN"
+    )
+except Exception:
+    TMDB_ACCESS_TOKEN = None
+
+if not TMDB_ACCESS_TOKEN:
+    TMDB_ACCESS_TOKEN = os.getenv(
+        "TMDB_ACCESS_TOKEN"
+    )
 
 
 # ============================================================
